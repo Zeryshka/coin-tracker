@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { SwitchTheme } from "@/components/ui/switchTheme";
+import { SignInDialog } from "./sign-in-dialog";
 
 export function Header() {
   return (
@@ -32,9 +33,7 @@ export function Header() {
           </NavigationMenu>
         </div>
         <div className="flex items-center space-x-4">
-          <Button asChild variant="default">
-            <Link href="/signin">Sign In</Link>
-          </Button>
+          <SignInDialog />
           <SwitchTheme />
         </div>
       </div>
