@@ -3,7 +3,6 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
-import { totp } from "otplib";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
@@ -20,7 +19,6 @@ export const authOptions: AuthOptions = {
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
-        token: { label: "2FA token", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
@@ -35,12 +33,6 @@ export const authOptions: AuthOptions = {
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
 
         if (!isPasswordValid) return null;
-
-        // If user has 2FA enabled
-        if (user.twoFactorSecret) {
-          const isValid = totp.check(credentials.token || "", user.twoFactorSecret);
-          if (!isValid) return null;
-        }
 
         return user;
       },

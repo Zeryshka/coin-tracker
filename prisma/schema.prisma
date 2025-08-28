@@ -44,7 +44,6 @@ model User {
   emailVerified   DateTime?
   image           String?
   password        String
-  twoFactorSecret String?
 
   accounts Account[]
   sessions Session[]
