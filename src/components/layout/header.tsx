@@ -1,8 +1,14 @@
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
 import { SwitchTheme } from "@/components/ui/switch-theme";
-import { SignInDialog } from "./sign-in-dialog";
-import { Logo } from "./logo";
+import { UserAvatarMenu } from "../user/user-avatar-menu";
+import { Logo } from "../logo";
 import Link from "next/link";
+import { SignInButton } from "../auth/sign-in-button";
 
 export function Header() {
   return (
@@ -31,7 +37,8 @@ export function Header() {
           </NavigationMenu>
         </div>
         <div className="flex items-center space-x-4">
-          <SignInDialog />
+          <UserAvatarMenu />
+          <SignInButton />
           <SwitchTheme />
         </div>
       </div>
