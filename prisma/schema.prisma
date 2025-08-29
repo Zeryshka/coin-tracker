@@ -3,9 +3,6 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
-@@index([userId])
-@@index([email])
-@@index([login])
 
 datasource db {
   provider = "postgresql"
@@ -29,6 +26,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -38,6 +36,8 @@ model Session {
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model User {
@@ -51,6 +51,9 @@ model User {
 
   accounts Account[]
   sessions Session[]
+
+  @@index([email])
+  @@index([login])
 }
 
 model VerificationToken {
