@@ -1,17 +1,15 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { SwitchTheme } from "@/components/ui/switchTheme";
+import { SwitchTheme } from "@/components/ui/switch-theme";
 import { SignInDialog } from "./sign-in-dialog";
+import { Logo } from "./logo";
+import Link from "next/link";
 
 export function Header() {
   return (
     <header className="w-full border-b bg-background">
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
         <div className="flex items-center space-x-8">
-          <Link href="/" className="text-xl font-bold">
-            Coin Tracker
-          </Link>
+          <Logo />
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
