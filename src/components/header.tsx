@@ -6,8 +6,8 @@ import Link from "next/link";
 
 export function Header() {
   return (
-    <header className="w-full border-b bg-background">
-      <div className="container mx-auto flex items-center justify-between py-4 px-6">
+    <header className="w-full border-b bg-background h-16">
+      <div className="container mx-auto flex items-center justify-between h-full px-6">
         <div className="flex items-center space-x-8">
           <Logo />
           <NavigationMenu>
