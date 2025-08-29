@@ -12,3 +12,9 @@ export async function updateUserProfile(userId: string, data: { login?: string |
     data,
   });
 }
+
+export async function getUserByLogin(login: string) {
+  return prisma.user.findUnique({
+    where: { login },
+  });
+}
