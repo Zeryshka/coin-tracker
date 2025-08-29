@@ -7,6 +7,7 @@ import { updateLogin } from "@/server-actions/update-login";
 import { toast } from "sonner";
 import { AiOutlineLoading3Quarters, AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 import { showToast } from "@/lib/showToast";
+import { useRouter } from "next/navigation";
 
 const LOGIN_REGEX = /^[a-zA-Z0-9_.-]{3,20}$/;
 
@@ -20,11 +21,13 @@ const icons = {
 export default function ChangeLoginInput() {
   const [login, setLogin] = useState("");
   const [status, setStatus] = useState<"idle" | "checking" | "free" | "taken">("idle");
+  const router = useRouter();
 
   const handleConfirmUpdate = async () => {
     try {
       await updateLogin(login);
       showToast("Success", "Login updated successfully", "success");
+      router.refresh();
     } catch (err: any) {
       showToast("Error", err.message || "Error updating login", "error");
     }
