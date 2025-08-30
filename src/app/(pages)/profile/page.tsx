@@ -11,7 +11,9 @@ export default async function Profile() {
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6">
       <h1 className="text-2xl font-bold mb-6">Profile</h1>
-      <p className="mb-4 text-gray-600">Current login: <span className="font-semibold">{login}</span></p>
+      <p className="mb-4 text-gray-600">
+        Current login: <span className="font-semibold">{login}</span>
+      </p>
 
       <Tabs defaultValue="main" className="w-full">
         <TabsList className="mb-4">

@@ -1,15 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { checkLoginAvailability } from "@/server-actions/check-login-availability";
 import { updateLogin } from "@/server-actions/update-login";
 import { toast } from "sonner";
 import { AiOutlineLoading3Quarters, AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 import { showToast } from "@/lib/showToast";
 import { useRouter } from "next/navigation";
+import useSWR from "swr";
 
 const LOGIN_REGEX = /^[a-zA-Z0-9_.-]{3,20}$/;
+
+const checkLoginAvailability = async (login: string): Promise<boolean> => {
+  const response = await fetch(`/api/user/check-login?login=${encodeURIComponent(login)}`);
+  if (!response.ok) throw new Error("Failed to check login");
+  return response.json();
+};
 
 const icons = {
   idle: null,
@@ -20,59 +26,66 @@ const icons = {
 
 export default function ChangeLoginInput() {
   const [login, setLogin] = useState("");
-  const [status, setStatus] = useState<"idle" | "checking" | "free" | "taken">("idle");
   const router = useRouter();
+
+  const {
+    data: isAvailable,
+    error,
+    isLoading,
+    isValidating,
+  } = useSWR(
+    login && LOGIN_REGEX.test(login) ? `/api/user/check-login?login=${login}` : null,
+    () => checkLoginAvailability(login),
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 1000,
+      onSuccess: (available) => {
+        if (available) {
+          toast.dismiss();
+          toast("Confirm", {
+            description: `Confirm update login to "${login}"?`,
+            position: "top-center",
+            action: {
+              label: "Confirm",
+              onClick: handleConfirmUpdate,
+            },
+          });
+        }
+      },
+    },
+  );
 
   const handleConfirmUpdate = async () => {
     try {
       await updateLogin(login);
       showToast("Success", "Login updated successfully", "success");
+      setLogin("");
       router.refresh();
     } catch (err: any) {
       showToast("Error", err.message || "Error updating login", "error");
     }
   };
 
-  useEffect(() => {
-    if (!login) {
-      setStatus("idle");
-      return;
-    }
+  const handleLoginChange = (value: string) => {
+    setLogin(value);
+  };
 
-    if (!LOGIN_REGEX.test(login)) {
-      setStatus("taken");
-      return;
-    }
+  const getStatus = () => {
+    if (!login) return "idle";
+    if (!LOGIN_REGEX.test(login)) return "taken";
+    if (isLoading || isValidating) return "checking";
+    if (error) return "taken";
+    return isAvailable ? "free" : "taken";
+  };
 
-    setStatus("checking");
-    const handler = setTimeout(async () => {
-      const available = await checkLoginAvailability(login);
-      setStatus(available ? "free" : "taken");
-    }, 1000);
-
-    return () => clearTimeout(handler);
-  }, [login]);
-
-  useEffect(() => {
-    if (status === "free") {
-      toast.dismiss();
-      toast("Confirm", {
-        description: `Confirm update login to "${login}"?`,
-        position: "top-center",
-        action: {
-          label: "Confirm",
-          onClick: handleConfirmUpdate,
-        },
-      });
-    }
-  }, [status]);
+  const status = getStatus();
 
   return (
     <div className="relative w-full max-w-sm">
       <Input
         id="login"
         value={login}
-        onChange={(e) => setLogin(e.target.value)}
+        onChange={(e) => handleLoginChange(e.target.value)}
         placeholder="New login"
         className="pr-10"
       />
