@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { SignInForm } from "@/components/auth/sign-in-form";
+import { SignInForm } from "@/components/sign-in-form";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function SignIn({ searchParams }: { searchParams: Promise<{ callbackUrl?: string }> }) {

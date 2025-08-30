@@ -7,19 +7,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { UserAvatar } from "./user-avatar";
 
-export function UserAvatarMenu() {
+export function UserMenu() {
   const { data: session } = useSession();
 
   if (session?.user) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Avatar>
-            <AvatarImage src={session.user.image ?? ""} alt={session.user.name ?? "User"} />
-            <AvatarFallback>{session.user.name ?? "U"}</AvatarFallback>
-          </Avatar>
+          <UserAvatar />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>

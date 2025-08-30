@@ -1,8 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
-import ChangeLoginInput from "@/components/profile/change-login-input";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { Input } from "@/components/ui/input";
 
 export default async function Profile() {
   const session = await getServerSession(authOptions);
@@ -24,7 +24,7 @@ export default async function Profile() {
         <TabsContent value="main">
           <div className="grid w-full max-w-sm items-center gap-3">
             <Label htmlFor="login">Change login</Label>
-            <ChangeLoginInput />
+            <Input type="text" placeholder="New login" />
           </div>
         </TabsContent>
       </Tabs>

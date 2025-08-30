@@ -3,9 +3,9 @@
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { SignInForm } from "../auth/sign-in-form";
+import { SignInForm } from "@/components/sign-in-form";
 
-export function SignInButton() {
+export function SignInDialogButton() {
   const { data: session } = useSession();
 
   if (!session?.user) {
