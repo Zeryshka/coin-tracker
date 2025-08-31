@@ -11,32 +11,8 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
   pages: {
     signIn: "/auth/signin",
-  },
-  callbacks: {
-    async session({ session, token }) {
-      if (token && session.user) {
-        (session.user as any).id = token.sub!;
-        (session.user as any).login = (token as any).login;
-      }
-      return session;
-    },
-    async jwt({ token, user }) {
-      if (user) {
-        token.login = (user as any).login;
-      } else {
-        // fetch login from DB if missing
-        const dbUser = await prisma.user.findUnique({ where: { id: token.sub as string } });
-        if (dbUser) {
-          token.login = dbUser.login;
-        }
-      }
-      return token;
-    },
   },
 };
 
