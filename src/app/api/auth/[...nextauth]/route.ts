@@ -25,10 +25,7 @@ export const authOptions: AuthOptions = {
 
         const user = await prisma.user.findFirst({
           where: {
-            OR: [
-              { login: credentials.login },
-              { email: credentials.login },
-            ],
+            OR: [{ login: credentials.login }, { email: credentials.login }],
           },
         });
 
@@ -47,6 +44,7 @@ export const authOptions: AuthOptions = {
           email: user.email,
           login: user.login,
           role: user.role,
+          emailVerified: user.emailVerified,
         };
       },
     }),
@@ -63,6 +61,9 @@ export const authOptions: AuthOptions = {
         });
       }
     },
+  },
+  session: {
+    strategy: "jwt",
   },
 };
 

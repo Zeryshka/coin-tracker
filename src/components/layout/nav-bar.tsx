@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Logo } from "@/components/layout/logo";
 import { UserMenu } from "@/components/user-menu";
-import { SignInDialogButton } from "@/components/sign-in-dialog-btn";
+import { Button } from "../ui/button";
 
 export function NavBar() {
   const { data: session } = useSession();
@@ -42,7 +42,13 @@ export function NavBar() {
           </NavigationMenu>
         </div>
         <div className="flex items-center space-x-4">
-          {session ? <UserMenu /> : <SignInDialogButton />}
+          {session ? (
+            <UserMenu />
+          ) : (
+            <Button asChild>
+              <Link href="/auth/signin">Sign In</Link>
+            </Button>
+          )}
           <SwitchTheme />
         </div>
       </div>
