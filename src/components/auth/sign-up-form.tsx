@@ -62,7 +62,7 @@ export function SignUpForm() {
   return (
     <div className="space-y-2">
       <Form {...form}>
-        <div className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="text-lg font-semibold text-center">Create a new account</div>
 
           <FormField
@@ -143,10 +143,10 @@ export function SignUpForm() {
             )}
           />
 
-          <Button onClick={form.handleSubmit(onSubmit)} disabled={loading} className="w-full">
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? "Creating..." : "Sign Up"}
           </Button>
-        </div>
+        </form>
       </Form>
 
       <div className="my-2 border-t" />

@@ -47,7 +47,7 @@ export function SignInForm() {
   return (
     <div className="space-y-2">
       <Form {...form}>
-        <div className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="text-lg font-semibold text-center">Sign in to your account</div>
 
           <FormField
@@ -89,10 +89,10 @@ export function SignInForm() {
             )}
           />
 
-          <Button onClick={form.handleSubmit(onSubmit)} disabled={loading} className="w-full">
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? "Signing in..." : "Sign In"}
           </Button>
-        </div>
+        </form>
       </Form>
 
       <div className="my-2 border-t" />

@@ -1,3 +1,3 @@
 export const config = {
-  matcher: ["/profile/:path*"],
+  matcher: ["/dashboard/:path*", "/user/:path*", "/profile/:path*"],
 };

@@ -5,15 +5,18 @@ import { signUpSchema } from "@/schema/sign-up-schema";
 
 export async function POST(req: Request) {
   try {
-    const { login, email, password } = await req.json();
+    const { login, email, password, confirmPassword } = await req.json();
 
     const validationResult = signUpSchema.safeParse({
       login,
       email,
       password,
+      confirmPassword,
     });
 
     if (!validationResult.success) {
+      console.log(validationResult);
+
       const firstError = validationResult.error.issues[0];
       return NextResponse.json({ error: firstError.message }, { status: 400 });
     }
