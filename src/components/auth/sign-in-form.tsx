@@ -62,7 +62,6 @@ export function SignInForm() {
 }
 
 // TODO: переделать по аналогии с sign up form
-// TODO: разобраться с ошибкой OAuth account not linked
 // TODO: подтверждение email
 // TODO: повторная отправка кода подтверждения на email
 // TODO: восстановление пароля
