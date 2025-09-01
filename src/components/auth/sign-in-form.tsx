@@ -9,6 +9,13 @@ import { redirect } from "next/navigation";
 import { alert } from "@/components/alerts";
 import Link from "next/link";
 
+type SignInValues = {
+  login?: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
 export function SignInForm() {
   const [loading, setLoading] = useState(false);
 
@@ -46,10 +53,10 @@ export function SignInForm() {
           <Button type="submit" disabled={loading}>
             {loading ? "Signing in..." : "Sign In"}
           </Button>
-
-          <div className="my-2 border-t" />
         </div>
       </form>
+
+      <div className="my-2 border-t" />
 
       <Button variant="outline" onClick={() => signIn("google")} className="flex items-center gap-2">
         <FaGoogle className="w-5 h-5" />

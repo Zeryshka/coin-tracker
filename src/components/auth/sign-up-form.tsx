@@ -11,7 +11,7 @@ import { alert } from "@/components/alerts";
 import Link from "next/link";
 
 type SignUpValues = {
-  login?: string;
+  login: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -35,6 +35,11 @@ export function SignUpForm() {
   async function onSubmit(values: SignUpValues) {
     if (values.password !== values.confirmPassword) {
       alert.error("Пароли не совпадают");
+      return;
+    }
+
+    if (!values.login || !values.email || !values.password || !values.confirmPassword) {
+      alert.error("Все поля обязательны к заполнению");
       return;
     }
 
