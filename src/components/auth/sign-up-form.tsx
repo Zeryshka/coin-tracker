@@ -4,18 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { alert } from "@/components/alerts";
 import Link from "next/link";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signUpSchema } from "@/schema/sign-up-schema";
 
-type SignUpValues = {
-  login: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+type SignUpValues = z.infer<typeof signUpSchema>;
 
 export function SignUpForm() {
   const router = useRouter();
@@ -24,6 +22,7 @@ export function SignUpForm() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const form = useForm<SignUpValues>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       login: "",
       email: "",
@@ -33,44 +32,41 @@ export function SignUpForm() {
   });
 
   async function onSubmit(values: SignUpValues) {
-    if (values.password !== values.confirmPassword) {
-      alert.error("Пароли не совпадают");
-      return;
-    }
-
-    if (!values.login || !values.email || !values.password || !values.confirmPassword) {
-      alert.error("Все поля обязательны к заполнению");
-      return;
-    }
-
     setLoading(true);
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        login: values.login,
-        email: values.email,
-        password: values.password,
-      }),
-    });
 
-    const data = await res.json();
-    setLoading(false);
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          login: values.login,
+          email: values.email,
+          password: values.password,
+        }),
+      });
 
-    if (!res.ok) {
-      alert.error(data.error || "Ошибка регистрации");
-      return;
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert.error(data.error || "Ошибка регистрации");
+        return;
+      }
+
+      alert.success("На вашу почту отправлено письмо с подтверждением регистрации");
+      router.push("/auth/signin");
+    } catch (error) {
+      alert.error("Произошла ошибка при регистрации");
+    } finally {
+      setLoading(false);
     }
-
-    alert.success("На вашу почту отправлено письмо с подтверждением регистрации");
-    router.push("/auth/signin");
   }
 
   return (
-    <div>
+    <div className="space-y-2">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-          <div className="text-lg font-semibold">Create a new account</div>
+        <div className="space-y-4">
+          <div className="text-lg font-semibold text-center">Create a new account</div>
+
           <FormField
             control={form.control}
             name="login"
@@ -79,9 +75,11 @@ export function SignUpForm() {
                 <FormControl>
                   <Input placeholder="Username" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="email"
@@ -90,9 +88,11 @@ export function SignUpForm() {
                 <FormControl>
                   <Input type="email" placeholder="Email" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="password"
@@ -101,18 +101,24 @@ export function SignUpForm() {
                 <FormControl>
                   <div className="relative">
                     <Input type={showPassword ? "text" : "password"} placeholder="Password" {...field} />
-                    <button
+                    <Button
                       type="button"
-                      className="absolute right-2 top-2 text-gray-600"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-1 top-1 h-7 w-7 text-gray-600"
                       onClick={() => setShowPassword(!showPassword)}
+                      tabIndex={-1}
+                      aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
                     >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
+                      {showPassword ? <FaEyeSlash className="h-4 w-4" /> : <FaEye className="h-4 w-4" />}
+                    </Button>
                   </div>
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="confirmPassword"
@@ -121,25 +127,35 @@ export function SignUpForm() {
                 <FormControl>
                   <div className="relative">
                     <Input type={showConfirm ? "text" : "password"} placeholder="Confirm Password" {...field} />
-                    <button
+                    <Button
                       type="button"
-                      className="absolute right-2 top-2 text-gray-600"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-1 top-1 h-7 w-7 text-gray-600"
                       onClick={() => setShowConfirm(!showConfirm)}
+                      tabIndex={-1}
+                      aria-label={showConfirm ? "Скрыть пароль" : "Показать пароль"}
                     >
-                      {showConfirm ? <FaEyeSlash /> : <FaEye />}
-                    </button>
+                      {showConfirm ? <FaEyeSlash className="h-4 w-4" /> : <FaEye className="h-4 w-4" />}
+                    </Button>
                   </div>
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={loading} className="w-full">
+
+          <Button onClick={form.handleSubmit(onSubmit)} disabled={loading} className="w-full">
             {loading ? "Creating..." : "Sign Up"}
           </Button>
-        </form>
+        </div>
       </Form>
 
-      <Link href="/auth/signin">Есть аккаунт? Войти</Link>
+      <div className="text-center">
+        <Link href="/auth/signin" className="text-sm hover:underline">
+          Есть аккаунт? Войти
+        </Link>
+      </div>
     </div>
   );
 }

@@ -4,27 +4,35 @@ import { toast } from "sonner";
 import { FaCheckCircle, FaExclamationTriangle, FaInfoCircle, FaTimesCircle } from "react-icons/fa";
 
 export const alert = {
-  success: (message: string) =>
+  success: (message: string) => {
+    toast.dismiss();
     toast.success("Success", {
       description: message,
       icon: <FaCheckCircle className="text-green-500" />,
-    }),
+    });
+  },
 
-  error: (message: string) =>
+  error: (message: string) => {
+    toast.dismiss();
     toast.error("Error", {
       description: message,
       icon: <FaTimesCircle className="text-red-500" />,
-    }),
+    });
+  },
 
-  warning: (message: string) =>
+  warning: (message: string) => {
+    toast.dismiss();
     toast.warning("Warning", {
       description: message,
       icon: <FaExclamationTriangle className="text-yellow-500" />,
-    }),
+    });
+  },
 
-  info: (message: string) =>
+  info: (message: string) => {
+    toast.dismiss();
     toast.info("Info", {
       description: message,
       icon: <FaInfoCircle className="text-blue-500" />,
-    }),
+    });
+  },
 };
