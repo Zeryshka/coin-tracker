@@ -9,12 +9,9 @@ import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import { alert } from "@/components/alerts";
 import Link from "next/link";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpSchema } from "@/schema/sign-up-schema";
+import { signUpSchema, SignUpValues } from "@/schema/sign-up-schema";
 import { signIn } from "next-auth/react";
-
-type SignUpValues = z.infer<typeof signUpSchema>;
 
 export function SignUpForm() {
   const router = useRouter();
