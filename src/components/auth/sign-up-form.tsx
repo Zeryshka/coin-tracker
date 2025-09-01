@@ -39,8 +39,8 @@ export function SignUpForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          login: values.login,
-          email: values.email,
+          login: values.login.trim(),
+          email: values.email.trim().toLowerCase(),
           password: values.password,
         }),
       });
