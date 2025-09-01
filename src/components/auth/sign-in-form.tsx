@@ -36,7 +36,7 @@ export function SignInForm() {
     setLoading(false);
 
     if (res?.error) {
-      alert.error("Неверные учётные данные");
+      alert.error("Invalid credentials");
     } else {
       redirect("/profile");
     }
@@ -63,13 +63,13 @@ export function SignInForm() {
         Sign in with Google
       </Button>
 
-      <Link href="/auth/signup">Нет аккаунта? Зарегистрироваться</Link>
+      <Link href="/auth/signup">Don't have an account? Sign up</Link>
     </div>
   );
 }
 
-// TODO: переделать по аналогии с sign up form
-// TODO: подтверждение email
-// TODO: повторная отправка кода подтверждения на email
-// TODO: восстановление пароля
+// TODO: refactor similar to sign up form
+// TODO: email confirmation
+// TODO: resend confirmation code to email
+// TODO: password recovery
 // TODO: 2FA

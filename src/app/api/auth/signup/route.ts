@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const { login, email, password } = await req.json();
 
     if (!email || !password || !login) {
-      return NextResponse.json({ error: "Login, email, password - обязательны" }, { status: 400 });
+      return NextResponse.json({ error: "Login, email, password are required" }, { status: 400 });
     }
 
     const existingUser = await prisma.user.findFirst({
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     });
 
     if (existingUser) {
-      return NextResponse.json({ error: "Пользователь с таким email или login уже существует" }, { status: 400 });
+      return NextResponse.json({ error: "User with this email or login already exists" }, { status: 400 });
     }
 
     const hashedPassword = await hash(password, 10);
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, user: { id: newUser.id, email: newUser.email, login: newUser.login } });
   } catch (error) {
-    console.error("Ошибка регистрации:", error);
-    return NextResponse.json({ error: "Ошибка сервера" }, { status: 500 });
+    console.error("Registration error:", error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

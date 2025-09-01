@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import { alert } from "@/components/alerts";
 import Link from "next/link";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema } from "@/schema/sign-up-schema";
+import { signIn } from "next-auth/react";
 
 type SignUpValues = z.infer<typeof signUpSchema>;
 
@@ -48,14 +49,14 @@ export function SignUpForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert.error(data.error || "Ошибка регистрации");
+        alert.error(data.error || "Registration error");
         return;
       }
 
-      alert.success("На вашу почту отправлено письмо с подтверждением регистрации");
+      alert.success("A confirmation email has been sent to your email address");
       router.push("/auth/signin");
     } catch (error) {
-      alert.error("Произошла ошибка при регистрации");
+      alert.error("An error occurred during registration");
     } finally {
       setLoading(false);
     }
@@ -108,7 +109,7 @@ export function SignUpForm() {
                       className="absolute right-1 top-1 h-7 w-7 text-gray-600"
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex={-1}
-                      aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
                       {showPassword ? <FaEyeSlash className="h-4 w-4" /> : <FaEye className="h-4 w-4" />}
                     </Button>
@@ -134,7 +135,7 @@ export function SignUpForm() {
                       className="absolute right-1 top-1 h-7 w-7 text-gray-600"
                       onClick={() => setShowConfirm(!showConfirm)}
                       tabIndex={-1}
-                      aria-label={showConfirm ? "Скрыть пароль" : "Показать пароль"}
+                      aria-label={showConfirm ? "Hide password" : "Show password"}
                     >
                       {showConfirm ? <FaEyeSlash className="h-4 w-4" /> : <FaEye className="h-4 w-4" />}
                     </Button>
@@ -151,9 +152,16 @@ export function SignUpForm() {
         </div>
       </Form>
 
+      <div className="my-2 border-t" />
+
+      <Button variant="outline" onClick={() => signIn("google")} className="flex items-center gap-2 w-full">
+        <FaGoogle className="w-5 h-5" />
+        Sign up with Google
+      </Button>
+
       <div className="text-center">
         <Link href="/auth/signin" className="text-sm hover:underline">
-          Есть аккаунт? Войти
+          Already have an account? Sign in
         </Link>
       </div>
     </div>

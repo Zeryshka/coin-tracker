@@ -6,20 +6,20 @@ export const signUpSchema = z
   .object({
     login: z
       .string()
-      .min(2, "Логин должен содержать минимум 2 символа")
-      .max(20, "Логин не должен превышать 20 символов")
-      .regex(/^[a-zA-Z0-9_]+$/, "Логин может содержать только буквы, цифры и нижнее подчёркивание"),
+      .min(2, "Login must contain at least 2 characters")
+      .max(20, "Login must not exceed 20 characters")
+      .regex(/^[a-zA-Z0-9_]+$/, "Login can only contain letters, numbers, and underscores"),
 
-    email: z.string().email("Введите корректный email"),
+    email: z.string().email("Please enter a valid email"),
 
     password: z
       .string()
-      .min(8, "Пароль должен содержать минимум 8 символов")
-      .regex(PASSWORD_REGEX, "Пароль должен содержать заглавные и строчные буквы, цифры и специальные символы"),
+      .min(8, "Password must contain at least 8 characters")
+      .regex(PASSWORD_REGEX, "Password must contain uppercase and lowercase letters, numbers, and special characters"),
 
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Пароли не совпадают",
+    message: "Passwords do not match",
     path: ["confirmPassword"],
   });
