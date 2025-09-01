@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hash } from "bcryptjs";
+import { signUpSchema } from "@/schema/sign-up-schema";
 
 export async function POST(req: Request) {
   try {
     const { login, email, password } = await req.json();
 
-    if (!email || !password || !login) {
-      return NextResponse.json({ error: "Login, email, password are required" }, { status: 400 });
+    const validationResult = signUpSchema.safeParse({
+      login,
+      email,
+      password,
+    });
+
+    if (!validationResult.success) {
+      const firstError = validationResult.error.issues[0];
+      return NextResponse.json({ error: firstError.message }, { status: 400 });
     }
 
     const existingUser = await prisma.user.findFirst({
