@@ -66,6 +66,54 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
+  callbacks: {
+    async jwt({ token, user, trigger, session }) {
+      if (user) {
+        token.id = user.id;
+        token.login = user.login;
+        token.role = user.role;
+        token.emailVerified = user.emailVerified;
+        return token;
+      }
+
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: {
+            id: true,
+            login: true,
+            role: true,
+            emailVerified: true,
+            email: true,
+            name: true,
+          },
+        });
+
+        if (dbUser) {
+          token.login = dbUser.login;
+          token.role = dbUser.role;
+          token.emailVerified = dbUser.emailVerified;
+        } else {
+          return { ...token, error: "User not found" };
+        }
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.login = token.login as string | null;
+        session.user.role = token.role as string | null;
+        session.user.emailVerified = token.emailVerified as Date | null;
+
+        if (token.error) {
+          session.error = token.error as string;
+        }
+      }
+      return session;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);
