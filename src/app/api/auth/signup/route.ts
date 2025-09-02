@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hash } from "bcryptjs";
 import { signUpSchema } from "@/schema/sign-up-schema";
+import { VerificationService } from "@/service/verification.service";
+import { EmailService } from "@/service/email.service";
 
 export async function POST(req: Request) {
   try {
@@ -41,7 +43,27 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ success: true, user: { id: newUser.id, email: newUser.email, login: newUser.login } });
+    // Создаем токен подтверждения и отправляем email
+    try {
+      const verificationToken = await VerificationService.createVerificationToken(email);
+      const emailSent = await EmailService.sendVerificationEmail(email, verificationToken.token);
+
+      if (!emailSent) {
+        console.warn("Failed to send verification email, but user was created");
+      }
+    } catch (emailError) {
+      console.error("Error sending verification email:", emailError);
+    }
+
+    return NextResponse.json({
+      success: true,
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        login: newUser.login,
+      },
+      message: "Registration successful. Please check your email to verify your account.",
+    });
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

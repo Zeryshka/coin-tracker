@@ -39,7 +39,8 @@ export function SignUpForm() {
         body: JSON.stringify({
           login: values.login.trim(),
           email: values.email.trim().toLowerCase(),
-          password: values.password,
+          password: values.password.trim(),
+          confirmPassword: values.confirmPassword.trim(),
         }),
       });
 
