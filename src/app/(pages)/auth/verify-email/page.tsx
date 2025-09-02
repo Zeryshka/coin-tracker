@@ -36,9 +36,7 @@ export default function VerifyEmailPage() {
         setVerificationStatus("success");
         alert.success("Ваш email успешно подтвержден!");
         await update();
-        setTimeout(() => {
-          router.push("/profile");
-        }, 2000);
+        router.push("/profile");
       } else {
         setVerificationStatus("error");
         alert.error(data.error || "Ошибка подтверждения email");
@@ -101,13 +99,6 @@ export default function VerifyEmailPage() {
               <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
               <p>Подтверждаем ваш email...</p>
             </div>
-          )}
-
-          {verificationStatus === "success" && (
-            <Alert variant="default" className="bg-green-50 border-green-200">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertTitle>Успешно!</AlertTitle>
-            </Alert>
           )}
 
           {(!token || verificationStatus === "error") && (
