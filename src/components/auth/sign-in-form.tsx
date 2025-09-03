@@ -47,7 +47,7 @@ export function SignInForm() {
   return (
     <div className="space-y-2">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <div className="text-lg font-semibold text-center">Sign in to your account</div>
 
           <FormField
@@ -88,6 +88,12 @@ export function SignInForm() {
               </FormItem>
             )}
           />
+
+          <div className="text-center">
+            <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline">
+              Forgot password?
+            </Link>
+          </div>
 
           <Button type="submit" disabled={loading} className="w-full">
             {loading ? "Signing in..." : "Sign In"}

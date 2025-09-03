@@ -24,7 +24,9 @@ export default function VerifyEmailPage() {
   }, [token]);
 
   const verifyEmailToken = async () => {
-    if (!token) return;
+    if (!token) {
+      return;
+    }
 
     setVerificationStatus("loading");
 

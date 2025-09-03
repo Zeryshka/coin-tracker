@@ -63,7 +63,7 @@ export function SignUpForm() {
   return (
     <div className="space-y-2">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <div className="text-lg font-semibold text-center">Create a new account</div>
 
           <FormField

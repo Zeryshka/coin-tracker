@@ -3,7 +3,8 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compare } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
+import { randomBytes } from "crypto";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -55,10 +56,24 @@ export const authOptions: AuthOptions = {
   },
   events: {
     async createUser({ user }) {
-      if (!(user as any).login) {
+      const updateData: any = {};
+
+      // Устанавливаем логин, если его нет
+      if (!user.login) {
+        updateData.login = `Anonym${Date.now()}`;
+      }
+
+      // Генерируем пароль для OAuth пользователей и email автоматически подтверждён
+      if (!user.password) {
+        const randomPassword = randomBytes(32).toString("hex");
+        updateData.password = await hash(randomPassword, 12);
+        updateData.emailVerified = new Date();
+      }
+
+      if (Object.keys(updateData).length > 0) {
         await prisma.user.update({
           where: { id: user.id },
-          data: { login: `Anonym${Date.now()}` },
+          data: updateData,
         });
       }
     },
@@ -72,7 +87,9 @@ export const authOptions: AuthOptions = {
         token.id = user.id;
         token.login = user.login;
         token.role = user.role;
+        token.email = user.email;
         token.emailVerified = user.emailVerified;
+        token.name = user.name || null;
         return token;
       }
 
@@ -83,8 +100,8 @@ export const authOptions: AuthOptions = {
             id: true,
             login: true,
             role: true,
-            emailVerified: true,
             email: true,
+            emailVerified: true,
             name: true,
           },
         });
@@ -92,7 +109,9 @@ export const authOptions: AuthOptions = {
         if (dbUser) {
           token.login = dbUser.login;
           token.role = dbUser.role;
+          token.email = dbUser.email;
           token.emailVerified = dbUser.emailVerified;
+          token.name = dbUser.name;
         } else {
           return { ...token, error: "User not found" };
         }
@@ -103,9 +122,9 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.login = token.login as string | null;
-        session.user.role = token.role as string | null;
-        session.user.emailVerified = token.emailVerified as Date | null;
+        session.user.login = token.login as string;
+        session.user.role = token.role as string;
+        session.user.emailVerified = token.emailVerified as Date;
 
         if (token.error) {
           session.error = token.error as string;

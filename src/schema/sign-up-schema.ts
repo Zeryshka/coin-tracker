@@ -1,6 +1,5 @@
 import z from "zod";
-
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+import { PASSWORD_REGEX } from "@/lib/constants";
 
 export const signUpSchema = z
   .object({
