@@ -45,12 +45,17 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   password      String?
-  role          String    @default("USER")
+  role          Role      @default(USER)
   name          String?
   image         String?
 
   accounts Account[]
   sessions Session[]
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model VerificationToken {
